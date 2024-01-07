@@ -1,0 +1,207 @@
+﻿@page "/"
+
+@inject BisleriumCafe.Data.Services.CofeeTypesService CoffeeService
+@inject BisleriumCafe.Data.Services.AddInsService AddInsService
+@inject BisleriumCafe.Data.Services.CartService CartService
+@inject Microsoft.JSInterop.IJSRuntime JSRuntime
+@* @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager *@
+
+
+<head>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap JS (popper.js and bootstrap.js are required) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .coffee-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 200px;
+            height: 300px; /* Set a fixed height for the card */
+            text-align: center;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+            }
+
+        .card-img-top {
+            max-width: 100%;
+            height: 100%; /* Ensure the image fills the card height */
+            object-fit: cover; /* Maintain aspect ratio and cover the entire space */
+            border-radius: 50%;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .btn-add {
+            width: 100%;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 8px; /* Adjust padding for a smaller button */
+            font-size: 12px; /* Adjust font size for a smaller button */
+            border-radius: 8px; /* Add border-radius for a rounded button */
+            background-color: #28a745; /* Set background color */
+            color: #fff; /* Set text color to white */
+            border: none; /* Remove border */
+            cursor: pointer;
+        }
+
+            .btn-add:hover {
+                background-color: #218838; /* Darker shade on hover */
+            }
+    </style>
+</head>
+
+<body>
+
+    @if (LoginService.CurrentUserRole == null)
+    {
+        <!-- Show login button if the user is not logged in -->
+        <button class="btn btn-primary" @onclick="NavigateToLoginPage">Login</button>
+    }
+    else
+    {
+        <!-- Show user's role if logged in -->
+        <p>Welcome, @LoginService.CurrentUserRole!</p>
+    }
+    @if (LoginService.IsAdmin(LoginService.CurrentUserRole) || LoginService.IsStaff(LoginService.CurrentUserRole))
+    {
+        <h3 class="">Available Coffee</h3>
+        <div class="coffee-container d-flex flex-wrap gap-4 mt-4">
+
+            @foreach (var coffeeType in CoffeeService.GetCoffeeTypes())
+            {
+                <div class="card rounded-3" style="width: 10rem; height:auto">
+                    <img class="card-img-top" src="@coffeeType.ImageLocation" alt="@coffeeType.CoffeeName" height="150px">
+                    <div class="card-body">
+                        <p style="font-size:small">@coffeeType.CoffeeName</p>
+                        <p class="mt-0 mb-3" style="font-size:x-small">RS: @coffeeType.CoffeePrice</p>
+                        <button class="btn btn-success btn-add" @onclick="() => AddCoffeeToCart(coffeeType)">Add</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+
+    <div>
+        <h2>Add-Ins</h2>
+
+        <div class="coffee-container d-flex flex-wrap gap-4 mt-4">
+            @foreach (var addIn in AddInsService.RetrieveAddInsData())
+            {
+                <div class="card rounded-3" style="width: 10rem; height:auto">
+                    <div class="card-body">
+                        <p style="font-size:small">@addIn.AddInName</p>
+                        <p class="mt-0 mb-3" style="font-size:x-small">RS: @addIn.AddInPrice</p>
+                        <button class="btn btn-success btn-add" @onclick="() => AddAddInToCart(addIn)">Add</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>Your Cart</h3>
+        @if (CartService.SelectedCoffee != null)
+        {
+            <p>@CartService.SelectedCoffee.CoffeeName - RS: @CartService.SelectedCoffee.CoffeePrice</p>
+        }
+
+        @foreach (var item in CartService.SelectedAddIn)
+        {
+            <p>@item.AddInName - RS: @item.AddInPrice</p>
+        }
+
+        <p>Total: RS @CartService.CalculateTotalPrice()</p>
+
+        <button class="btn btn-danger" @onclick="CancelOrder">Cancel</button>
+        <button id="payButton" class="btn btn-success">Pay</button>
+    </div>
+
+    <!-- Popup modal section -->
+    <div class="modal" tabindex="-1" role="dialog" id="customerModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Enter Customer Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Customer information form -->
+                    <div class="mb-3">
+                        <label for="customerName" class="form-label">Customer Name</label>
+                        <input type="text" class="form-control" id="customerName" @bind="CartService.CurrentCustomer.CustomerName" placeholder="Enter your name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phoneNumber" @bind="CartService.CurrentCustomer.PhoneNumber" placeholder="Enter your phone number">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="SubmitOrder">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Popup login Modal*@
+
+
+    <script>
+        // JavaScript to handle the click event and show the modal
+        document.getElementById('payButton').addEventListener('click', function () {
+            var customerModal = new bootstrap.Modal(document.getElementById('customerModal'));
+            customerModal.show();
+        });
+    </script>
+</body>
+
+@code {
+    private void AddCoffeeToCart(CoffeeTypes coffee)
+    {
+        CartService.AddCoffeeToCart(coffee);
+    }
+
+    private void AddAddInToCart(AddIns addIns)
+    {
+        CartService.AddAddInToCart(addIns);
+    }
+
+    private void CancelOrder()
+    {
+        // Reset the selected items in the cart
+        CartService.SelectedCoffee = null;
+        CartService.SelectedAddIn.Clear();
+    }
+
+    private void SubmitOrder()
+    {
+        // Call the SubmitOrder method in your CartService
+        CartService.SubmitOrder();
+
+        // Optionally, you can close the modal after submitting the order
+    }
+
+    private void NavigateToLoginPage()
+    {
+        // Navigate to the login page
+        //NavigationManager.NavigateTo("/login");
+    }
+}

@@ -15,5 +15,7 @@ namespace BisleriumCafe.Data.Models
 
         public decimal TotalPrice;
 
+        public DateTime OrderTimestamp { get; set; }
+
     }
 }

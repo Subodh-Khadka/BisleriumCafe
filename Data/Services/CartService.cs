@@ -17,6 +17,8 @@ namespace BisleriumCafe.Data.Services
         public Customer CurrentCustomer { get; set; } = new Customer();
         public Order CurrentOrder { get; set; } = new Order();
 
+        /*public bool OrderSubmissionSuccessful { get; set; } */
+            
         public void AddCoffeeToCart(CoffeeTypes coffee)
         {
             SelectedCoffee = coffee;
@@ -47,6 +49,7 @@ namespace BisleriumCafe.Data.Services
         {
             try
             {
+
                 // Store customer details in a JSON file
                 string customerFilePath = BisleriumUtils.CustomerFilePath();
                 List<Customer> existingCustomers = JsonConvert.DeserializeObject<List<Customer>>(File.ReadAllText(customerFilePath)) ?? new List<Customer>();
@@ -62,6 +65,7 @@ namespace BisleriumCafe.Data.Services
                 Order newOrder = new Order
                 {
                     OrderId = Guid.NewGuid(),
+                    OrderTimestamp = DateTime.UtcNow,
                     CustomerId = CurrentCustomer.Id,
                     SelectedCoffee = SelectedCoffee != null ? new List<CoffeeTypes> { SelectedCoffee } : new List<CoffeeTypes>(),
                     SelcectedAddIns = SelectedAddIn.ToList(), // Copy the list to ensure it's not modified externally
@@ -70,17 +74,15 @@ namespace BisleriumCafe.Data.Services
 
                 existingOrders.Add(newOrder);
                 File.WriteAllText(orderFilePath, JsonConvert.SerializeObject(existingOrders, Formatting.Indented));
+
+                /*OrderSubmissionSuccessful = true; //Setting the value true for successful Order*/
             }
             catch (Exception ex)
-            {
-                // Log or handle the exception
-                Console.WriteLine($"An error occurred while submitting the order: {ex.Message}");
-                // Optionally, you can rethrow the exception if you want to propagate it further
-                // throw;
+            {                
+                Console.WriteLine($"An error occurred while submitting the order: {ex.Message}");               
+                /*OrderSubmissionSuccessful = false;*/
             }
-        }
-
-       
+        }              
     }
 }
 

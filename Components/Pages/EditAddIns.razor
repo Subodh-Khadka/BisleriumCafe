@@ -1,0 +1,126 @@
+﻿@page "/editaddins/{Id:guid}"
+
+@inject BisleriumCafe.Data.Services.AddInsService AddInsService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@inject Microsoft.JSInterop.IJSRuntime JSRuntime
+
+
+<h3>Edit AddIn</h3>
+
+
+@if (addInsToEdit != null)
+{
+    <div>
+        <label for="newAddInName">New AddIn Name:</label>
+        <input type="text" id="newAddInName" @bind="addInsToEdit.AddInName" />
+    </div>
+    <div>
+        <label for="newAddInPrice">New AddIn Price:</label>
+        <input type="number" id="newAddInPrice" @bind="addInsToEdit.AddInPrice" />
+    </div>   
+    <div>
+        @* <button class="btn btn-primary" @onclick="EditAddIn">Save Changes</button> *@
+        <button id="SaveBtn" class="btn btn-success">Save</button>
+        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+<!-- Popup modal section -->
+<div class="modal" tabindex="-1" role="dialog" id="adminPasswordModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Enter Admin Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Customer information form -->
+                <div class="mb-3">
+                    <label for="adminPassword" class="form-label">Enter Admin Password</label>
+                    <input type="password" class="form-control" id="adminPassword" @bind="adminPassword">
+                </div>               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" @onclick="SubmitAdminPassword">Submit</button>
+            </div>
+            @if (isPasswordValid == 2)
+            {
+                <div class="alert alert-danger" role="alert">
+                    Invalid Admin Password. Please try again.
+                </div>
+            } 
+            else if(isPasswordValid == 1)
+            {
+                <div class="alert alert-success" role="alert">
+                   Addin Updated Successfully!
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    // JavaScript to handle the click event and show the modal
+    document.getElementById('SaveBtn').addEventListener('click', function () {
+        var passwordModal = new bootstrap.Modal(document.getElementById('adminPasswordModal'));
+        passwordModal.show();
+    });
+</script>
+
+
+
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private AddIns addInsToEdit;
+    private string adminPassword;
+    private int isPasswordValid  = 0;
+
+    protected override void OnInitialized()
+    {
+        // Retrieve the AddIns with the specified id
+        addInsToEdit = AddInsService.RetrieveAddInsData().FirstOrDefault(a => a.AddInID == Id);
+    }
+
+    private void CancelEdit()
+    {
+        // Navigate back to the home page without saving changes
+        NavigationManager.NavigateTo("/");
+    }
+
+    public void SubmitAdminPassword()
+    {
+        // Check if the entered admin password is correct
+        if (LoginService.ValidateAdminPassword(adminPassword))
+        {
+            isPasswordValid = 1;
+
+            try
+            {
+                // Update the AddIn details
+                AddInsService.EditAddIns(addInsToEdit);
+                //NavigationManager.NavigateTo("/");
+               
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception (display an error message, log, etc.)
+            isPasswordValid = 2;            
+                Console.WriteLine($"Error editing AddIn: {ex.Message}");
+            }
+        }
+        else
+        {
+            // Incorrect admin password, handle this scenario accordingly
+            isPasswordValid = 2;            
+        }
+    }
+}
+}
+   

@@ -21,6 +21,8 @@ namespace BisleriumCafe.Data.Services
                 new CoffeeTypes {CoffeeID = Guid.NewGuid(), CoffeeName = "Mocha", CoffeePrice = 180, ImageLocation = "/CoffeeImages/Mocha.jpg" },
                 new CoffeeTypes {CoffeeID = Guid.NewGuid(), CoffeeName = "Americano", CoffeePrice = 150, ImageLocation = "/CoffeeImages/Americano.jpg" },
                 new CoffeeTypes {CoffeeID = Guid.NewGuid(), CoffeeName = "Macchiato", CoffeePrice = 170, ImageLocation = "/CoffeeImages/Macchiato.jpg" },
+                new CoffeeTypes {CoffeeID = Guid.NewGuid(), CoffeeName = "Affogato", CoffeePrice = 270, ImageLocation = "/CoffeeImages/Affogato.jpg" },
+                new CoffeeTypes {CoffeeID = Guid.NewGuid(), CoffeeName = "IcedCoffee", CoffeePrice = 220, ImageLocation = "/CoffeeImages/IcedCoffee.jpg" },
             };
         }
 

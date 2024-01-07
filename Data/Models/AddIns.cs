@@ -11,5 +11,6 @@ namespace BisleriumCafe.Data.Models
         public Guid AddInID { get; set; }
         public String? AddInName { get; set; }
         public decimal AddInPrice { get; set; }
+        public String AddInImageUrl { get; set; }  
     }
 }

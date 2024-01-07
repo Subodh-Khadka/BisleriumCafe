@@ -30,4 +30,11 @@
     {
         return username == "Staff";
     }
+
+    public static bool ValidateAdminPassword(string adminPassword)
+    {
+        // Replace this with your logic to validate the admin password
+        string correctAdminPassword = "Admin@123";
+        return adminPassword == correctAdminPassword;
+    }
 }

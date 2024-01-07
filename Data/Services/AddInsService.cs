@@ -55,11 +55,12 @@ namespace BisleriumCafe.Data.Services
             {
                 List<AddIns> addIns = new List<AddIns>
         {
-            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Honey", AddInPrice = 50 },
-            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Cinnamon", AddInPrice = 30 },
-            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Chocolate", AddInPrice = 40 },
-            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Vanilla", AddInPrice = 35 },
-            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Hazelnut", AddInPrice = 45 },
+            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Honey", AddInPrice = 50,AddInImageUrl="/AddInsImages/fresh-honeycombs.jpg" },
+            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Cinnamon", AddInPrice = 30,AddInImageUrl = "/AddInsImages/cinnamon-table.jpg" },
+            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Chocolate", AddInPrice = 40,AddInImageUrl = "/AddInsImages/chocolate-bonbons-cocoa-powder-isolated-white-background.jpg" },
+            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Choco", AddInPrice = 40,AddInImageUrl = "/AddInsImages/cinnamon-table.jpg" },
+            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Vanilla", AddInPrice = 35,AddInImageUrl = "/AddInsImages/delicious-banana-milkshake.jpg"  },
+            new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Hazelnut", AddInPrice = 45,AddInImageUrl = "/AddInsImages/cashews-isolated-white-background.jpg" },
         };
                 SaveAddInsData(addIns);  // Corrected method call
             }
@@ -84,6 +85,52 @@ namespace BisleriumCafe.Data.Services
                 return new List<AddIns>();
             }
         }
+
+        /* public static List<AddIns> EditAddIns(Guid id, string newAddName)
+         {
+             //Retrieving the list of hobbies
+             List<AddIns> addIns = RetrieveAddInsData();
+
+             //Finding the addins with their specific id
+             AddIns addInsToEdit = addIns.FirstOrDefault(a => a.AddInID == id);
+
+             //
+             if (addInsToEdit != null)
+             {
+                 addInsToEdit.AddInName = newAddName;
+                 SaveAddInsData(addIns);
+                 return addIns;
+             }
+             else
+             {
+                 throw new Exception("AddIn Unavailable");
+             }
+         }*/
+        public static List<AddIns> EditAddIns(AddIns modifiedAddIns)
+        {
+            // Retrieving the list of AddIns
+            List<AddIns> addIns = RetrieveAddInsData();
+
+            // Finding the AddIns with the specific id
+            AddIns addInsToEdit = addIns.FirstOrDefault(a => a.AddInID == modifiedAddIns.AddInID);
+
+            if (addInsToEdit != null)
+            {
+                // Update the AddIns details with the modified values
+                addInsToEdit.AddInName = modifiedAddIns.AddInName;
+                addInsToEdit.AddInPrice = modifiedAddIns.AddInPrice;
+                // Update other properties as needed
+
+                SaveAddInsData(addIns);
+                return addIns;
+            }
+            else
+            {
+                throw new Exception("AddIn Unavailable");
+            }
+        }
+
+
     }
 }
 

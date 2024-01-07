@@ -1,0 +1,37 @@
+﻿<!-- LoginPage.razor -->
+@page "/login"
+
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+<h3>Login Page</h3>
+
+<div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" @bind="username" />
+</div>
+
+<div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" @bind="password" />
+</div>
+
+<button class="btn btn-primary" @onclick="LoginUser">Login</button>
+
+@code {
+    private string username;
+    private string password;
+
+    private void LoginUser()
+    {
+        // Implement your login logic here
+        if (LoginService.ValidateCredentials(username, password))
+        {
+            // Navigate to the home page after successful login
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            // Handle invalid credentials
+            // You can display an error message or take other actions
+        }
+    }
+}

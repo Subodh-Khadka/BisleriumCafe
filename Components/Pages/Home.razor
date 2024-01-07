@@ -4,7 +4,7 @@
 @inject BisleriumCafe.Data.Services.AddInsService AddInsService
 @inject BisleriumCafe.Data.Services.CartService CartService
 @inject Microsoft.JSInterop.IJSRuntime JSRuntime
-@* @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager *@
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
 
 <head>
@@ -161,7 +161,14 @@
         </div>
     </div>
 
-    @* Popup login Modal*@
+    @* Popup Message Section *@
+   @*  @if (showAlert)
+    {
+        <div class="alert alert-@alertType alert-dismissible fade show" role="alert">
+            <strong>@alertMessage</strong>
+            <button type="button" class="btn-close" @onclick="CloseAlert" aria-label="Close"></button>
+        </div>
+    } *@
 
 
     <script>
@@ -191,9 +198,11 @@
         CartService.SelectedAddIn.Clear();
     }
 
+    private bool showAlert = false;
+
     private void SubmitOrder()
     {
-        // Call the SubmitOrder method in your CartService
+        // Calling the SubmitOrder method in your CartService     
         CartService.SubmitOrder();
 
         // Optionally, you can close the modal after submitting the order
@@ -202,6 +211,6 @@
     private void NavigateToLoginPage()
     {
         // Navigate to the login page
-        //NavigationManager.NavigateTo("/login");
+        NavigationManager.NavigateTo("/login");
     }
 }

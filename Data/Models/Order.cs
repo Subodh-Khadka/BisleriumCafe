@@ -15,6 +15,8 @@ namespace BisleriumCafe.Data.Models
 
         public decimal TotalPrice { get; set; }
         public DateTime OrderTimestamp { get; set; }
+
+        public bool CoffeeRedeemed { get; set; }
     }
 
 }

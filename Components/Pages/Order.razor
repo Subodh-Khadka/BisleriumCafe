@@ -43,6 +43,7 @@
                 <th>Addins</th>
                 <th>Total</th>
                 <th>Order Timestamp</th>
+                <th>Order Reedemed</th>
             </tr>
         </thead>
         <tbody>
@@ -70,6 +71,16 @@
                     </td>
                     <td>RS @order.TotalPrice</td>
                     <td>@order.OrderTimestamp</td>
+                    <td>
+                        @if (order.CoffeeRedeemed)
+                        {
+                            <span>Coffee Redeemed!</span>
+                        }
+                        else
+                        {
+                            <span></span> <!-- or you can display a different message if CoffeeRedeemed is false -->
+                        }
+                    </td>
                 </tr>
             }
         </tbody>

@@ -34,7 +34,7 @@ namespace BisleriumCafe.Data.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error writing customer file: {ex.Message}");
+                Console.WriteLine($"Exception/Error: {ex.Message}");
             }
         }
 
@@ -56,8 +56,6 @@ namespace BisleriumCafe.Data.Services
             }
 
             return customer;
-        }
-
-        // You can add more methods for handling other membership-related operations
+        }        
     }
 }

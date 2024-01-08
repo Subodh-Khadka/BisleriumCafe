@@ -29,6 +29,8 @@ namespace BisleriumCafe
             builder.Services.AddScoped<BisleriumCafe.Data.Services.CofeeTypesService>();
             builder.Services.AddScoped<BisleriumCafe.Data.Services.AddInsService>();
             builder.Services.AddScoped<BisleriumCafe.Data.Services.CartService>();                                    
+            builder.Services.AddScoped<BisleriumCafe.Data.Services.OrderService>();                                    
+            builder.Services.AddScoped<BisleriumCafe.Data.Services.CustomerMembershipService>();                                    
 
 
 #endif

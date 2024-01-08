@@ -1,0 +1,50 @@
+﻿@page "/membership"
+@inject BisleriumCafe.Data.Services.CustomerMembershipService CustomerMembershipService
+@using BisleriumCafe.Data.Models
+
+<h3 class="text-center">Membership Management</h3>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Enter Customer Phone Number:</label>
+                <input type="text" class="form-control" @bind="phoneNumber" placeholder="Enter phone number">
+            </div>
+            <button class="btn btn-primary" @onclick="MakeCustomerMember">Make Member</button>
+            <p class="text-success">@successMessage</p>
+            <p class="text-danger">@errorMessage</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string phoneNumber;
+    private string successMessage;
+    private string errorMessage;
+
+    private void MakeCustomerMember()
+    {
+        // Check if the phone number is provided
+        if (!string.IsNullOrWhiteSpace(phoneNumber))
+        {
+            var customer = CustomerMembershipService.MakeCustomerMember(phoneNumber);
+
+            if (customer != null)
+            {
+                successMessage = $"Customer '{customer.CustomerName}' is now a member!";
+                errorMessage = string.Empty;
+            }
+            else
+            {
+                errorMessage = "Customer not found with the provided phone number.";
+                successMessage = string.Empty;
+            }
+        }
+        else
+        {
+            errorMessage = "Please enter a phone number.";
+            successMessage = string.Empty;
+        }
+    }
+}

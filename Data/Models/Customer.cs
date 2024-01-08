@@ -12,5 +12,7 @@ namespace BisleriumCafe.Data.Models
 
         public string CustomerName { get; set; }    
         public string PhoneNumber { get; set; }
+        public bool IsMember { get; set; }
+        public int PurchaseCount { get; set; }
     }
 }

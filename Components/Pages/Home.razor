@@ -139,7 +139,6 @@
                             <div class="price">Rs @coffeeType.CoffeePrice</div>
                             <button class="btn btn-success add-btn" @onclick="() => AddCoffeeToCart(coffeeType)">Add</button>
                         </div>
-
                     }
                 </div>
                 @* } *@
@@ -188,7 +187,7 @@
                     <p class="cart-total">Total: RS @CartService.CalculateTotalPrice()</p>
 
                     <button class="btn btn-danger cancel-btn" @onclick="CancelOrder">Cancel</button>
-                    <button id="payButton" class="btn pay-btn" @onclick="SubmitOrder">Pay</button>
+                    <button id="payButton" class="btn pay-btn">Pay</button>
                 </div>
             </div>
 
@@ -230,6 +229,7 @@
         document.getElementById('payButton').addEventListener('click', function () {
             var customerModal = new bootstrap.Modal(document.getElementById('customerModal'));
             customerModal.show();
+            customerModal.clear();
         });
     </script>
 
@@ -258,10 +258,12 @@
 
     private bool showAlert = false;
 
-    private void SubmitOrder()
+    public void SubmitOrder()
     {
         // Calling the SubmitOrder method in your CartService
         CartService.SubmitOrder();
+        CartService.CurrentCustomer.CustomerName = string.Empty;
+        CartService.CurrentCustomer.PhoneNumber = string.Empty;
 
         // Set the flag to indicate that the order submission is complete
 

@@ -1,4 +1,7 @@
-﻿public class LoginService
+﻿using Microsoft.AspNetCore.Components;
+
+
+public class LoginService
 {
     public static readonly Dictionary<string, string> users = new Dictionary<string, string>()
     {
@@ -32,9 +35,13 @@
     }
 
     public static bool ValidateAdminPassword(string adminPassword)
-    {
-        // Replace this with your logic to validate the admin password
+    {        
         string correctAdminPassword = "Admin@123";
         return adminPassword == correctAdminPassword;
+    }
+
+    public static void Logout()
+    {        
+        CurrentUserRole = null;        
     }
 }

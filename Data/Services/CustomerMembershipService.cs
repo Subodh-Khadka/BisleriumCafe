@@ -42,19 +42,14 @@ namespace BisleriumCafe.Data.Services
         {
             var customers = RetrieveCustomerData();
 
-            // Find the customer with the provided phone number
+            // Finding the customer with the provided phone number
             var customer = customers.FirstOrDefault(c => c.PhoneNumber == phoneNumber);
 
             if (customer != null)
-            {
-                // Update membership status and other membership-related fields
-                customer.IsMember = true;
-                // You may want to set other membership-related fields (e.g., start date)
-
-                // Save the updated customer data
+            {                
+                customer.IsMember = true;                                
                 SaveCustomerData(customers);
             }
-
             return customer;
         }        
     }

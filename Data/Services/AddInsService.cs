@@ -18,8 +18,7 @@ namespace BisleriumCafe.Data.Services
                 string existingData = File.ReadAllText(filePath);
 
                 if (string.IsNullOrEmpty(existingData))
-                {
-                    // If the file is empty or doesn't exist, inject sample data
+                {                 
                     InjectSampleAddInsData();
                 }
 
@@ -62,7 +61,7 @@ namespace BisleriumCafe.Data.Services
             new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Vanilla", AddInPrice = 35,AddInImageUrl = "/AddInsImages/delicious-banana-milkshake.jpg"  },
             new AddIns() { AddInID = Guid.NewGuid(), AddInName = "Hazelnut", AddInPrice = 45,AddInImageUrl = "/AddInsImages/cashews-isolated-white-background.jpg" },
         };
-                SaveAddInsData(addIns);  // Corrected method call
+                SaveAddInsData(addIns);  
             }
         }
 
@@ -86,40 +85,18 @@ namespace BisleriumCafe.Data.Services
             }
         }
 
-        /* public static List<AddIns> EditAddIns(Guid id, string newAddName)
-         {
-             //Retrieving the list of hobbies
-             List<AddIns> addIns = RetrieveAddInsData();
-
-             //Finding the addins with their specific id
-             AddIns addInsToEdit = addIns.FirstOrDefault(a => a.AddInID == id);
-
-             //
-             if (addInsToEdit != null)
-             {
-                 addInsToEdit.AddInName = newAddName;
-                 SaveAddInsData(addIns);
-                 return addIns;
-             }
-             else
-             {
-                 throw new Exception("AddIn Unavailable");
-             }
-         }*/
+        
         public static List<AddIns> EditAddIns(AddIns modifiedAddIns)
         {
-            // Retrieving the list of AddIns
-            List<AddIns> addIns = RetrieveAddInsData();
 
-            // Finding the AddIns with the specific id
+            List<AddIns> addIns = RetrieveAddInsData();
+            
             AddIns addInsToEdit = addIns.FirstOrDefault(a => a.AddInID == modifiedAddIns.AddInID);
 
             if (addInsToEdit != null)
-            {
-                // Update the AddIns details with the modified values
+            {                
                 addInsToEdit.AddInName = modifiedAddIns.AddInName;
-                addInsToEdit.AddInPrice = modifiedAddIns.AddInPrice;
-                // Update other properties as needed
+                addInsToEdit.AddInPrice = modifiedAddIns.AddInPrice;               
 
                 SaveAddInsData(addIns);
                 return addIns;

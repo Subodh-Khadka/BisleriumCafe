@@ -8,7 +8,7 @@ using System.IO;
 namespace BisleriumCafe.Data.Services
 {
     public class OrderService
-    {
+    { 
         private readonly string filePath = BisleriumUtils.OrderFilePath();
 
         public List<Order> RetrieveOrderData()

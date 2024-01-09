@@ -4,54 +4,26 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-@* 
-<style>
-    /* Add your custom styles for the order list page here */
-    .table-responsive {
-        margin-top: 20px;
-    }
-
-    /* You can customize the table styles based on your preferences */
-    table {
-        width: 100%;
-    }
-
-    th, td {
-        padding: 10px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #343a40; /* Dark background color for header */
-        color: #fff; /* White text color for header */
-    }
-
-    tbody tr:hover {
-        background-color: #f8f9fa; /* Light background color on hover */
-    }
-</style> *@
 
 <h3 class="text-center">All Orders</h3>
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
-                <th>Order ID</th>
-                @* <th>Customer ID</th> *@
+                <th>Order ID</th>                
                 <th>CName</th>
                 <th>Coffee</th>
                 <th>Addins</th>
                 <th>Total</th>
-                <th>Order Timestamp</th>
-                <th>Order Reedemed</th>
+                <th>Timestamp</th>
+                <th>Reedeem</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var order in OrderService.RetrieveOrderData())
             {                                                    
                 <tr>
-                    <td>@order.OrderId</td>
-                    @* <td>@order.Customer.Id</td> *@
+                    <td>@order.OrderId</td>                    
                     <td>@order.Customer.CustomerName</td>
                     <td>
                         <ul>
@@ -75,11 +47,7 @@
                         @if (order.CoffeeRedeemed)
                         {
                             <span>Coffee Redeemed!</span>
-                        }
-                        else
-                        {
-                            <span></span> <!-- or you can display a different message if CoffeeRedeemed is false -->
-                        }
+                        }                                             
                     </td>
                 </tr>
             }
@@ -88,11 +56,5 @@
 </div>
 
 @code {
-    List<Order> Orders { get; set; }
-
-    // protected override void OnInitialized()
-    // {
-    //     Retrieve all orders from the OrderService
-    //     Orders = OrderService.RetrieveOrderData();
-    // }
+    List<Order> Orders { get; set; }   
 }

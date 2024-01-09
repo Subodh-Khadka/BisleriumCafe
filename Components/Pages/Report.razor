@@ -1,0 +1,123 @@
+﻿@page "/salesReport"
+@using IronPdf
+@using System.Linq
+@using System.Text
+@inject BisleriumCafe.Data.Services.OrderService OrderService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+<h3>Sales Report</h3>
+<button class="btn btn-primary" @onclick="GenerateDailyReport">Generate Daily Report</button>
+<button class="btn btn-primary" @onclick="GenerateMonthlyReport">Generate Monthly Report</button>
+
+@code {
+    private void GenerateDailyReport()
+    {
+        var today = DateTime.Today;
+        var dailyOrders = OrderService.RetrieveOrderData().Where(o => o.OrderTimestamp.Date == today.Date);
+
+        if (dailyOrders.Any())
+        {
+            GenerateAndDownloadReport(dailyOrders, $"DailyReport_{today:yyyyMMdd}.pdf");
+        }
+        else
+        {            
+            Console.WriteLine("No orders found for today.");
+        }
+    }
+
+    private void GenerateMonthlyReport()
+    {
+        var now = DateTime.Now;
+        var monthlyOrders = OrderService.RetrieveOrderData()
+            .Where(o => o.OrderTimestamp.Year == now.Year && o.OrderTimestamp.Month == now.Month);
+
+        if (monthlyOrders.Any())
+        {
+            GenerateAndDownloadReport(monthlyOrders, $"MonthlyReport_{now:yyyyMM}.pdf");
+        }
+        else
+        {            
+            Console.WriteLine("No orders found for this month.");
+        }
+    }
+
+    private void GenerateAndDownloadReport(IEnumerable<BisleriumCafe.Data.Models.Order> orders, string fileName)
+    {
+        try
+        {
+            var pdfRenderer = new IronPdf.HtmlToPdf();
+            var pdfDocument = pdfRenderer.RenderHtmlAsPdf(GenerateHtmlReport(orders));
+
+            var pdfPath = @"D:\CoffeeReports";
+            var filePath = System.IO.Path.Combine(pdfPath, fileName);
+
+            pdfDocument.SaveAs(filePath);
+            
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);            
+        }
+    }
+
+    private string GenerateHtmlReport(IEnumerable<BisleriumCafe.Data.Models.Order> orders)
+    {
+        var htmlBuilder = new StringBuilder();
+
+        htmlBuilder.Append("<h1>Sales Report</h1>");
+        htmlBuilder.Append($"<h1>{DateTime.Now.ToString("MMMM yyyy")} Report</h1>");
+
+        var topCoffeeData = orders.SelectMany(o => o.SelectedCoffee)
+                                 .GroupBy(c => c.CoffeeName)
+                                 .OrderByDescending(g => g.Count())
+                                 .Take(5)
+                                 .Select(g => new { CoffeeName = g.Key, QuantitySold = g.Count() });
+
+        var topAddInData = orders.SelectMany(o => o.SelectedAddIns)
+                                .GroupBy(a => a.AddInName)
+                                .OrderByDescending(g => g.Count())
+                                .Take(5)
+                                .Select(g => new { AddInName = g.Key, QuantitySold = g.Count() });
+
+        var totalRevenue = orders.Sum(o => o.TotalPrice);
+        
+        htmlBuilder.Append("<style>");
+        htmlBuilder.Append("    table {");
+        htmlBuilder.Append("        border-collapse: collapse;");
+        htmlBuilder.Append("        width: 100%;");
+        htmlBuilder.Append("    }");
+        htmlBuilder.Append("    th, td {");
+        htmlBuilder.Append("        border: 1px solid #ddd;");
+        htmlBuilder.Append("        padding: 8px;");
+        htmlBuilder.Append("        text-align: left;");
+        htmlBuilder.Append("    }");
+        htmlBuilder.Append("</style>");
+
+        htmlBuilder.Append("<table>");
+        htmlBuilder.Append("    <thead>");
+        htmlBuilder.Append("        <tr>");
+        htmlBuilder.Append("            <th>Top 5 Coffee Types</th>");
+        htmlBuilder.Append("            <th>Quantity Sold</th>");
+        htmlBuilder.Append("            <th>Top 5 Add-ins</th>");
+        htmlBuilder.Append("            <th>Quantity Sold</th>");
+        htmlBuilder.Append("            <th>Total Revenue (In Rs)</th>");
+        htmlBuilder.Append("        </tr>");
+        htmlBuilder.Append("    </thead>");
+        htmlBuilder.Append("    <tbody>");
+        htmlBuilder.Append("        <tr>");
+        htmlBuilder.Append($"            <td><ul>{string.Join("", topCoffeeData.Select(data => $"<li>{data.CoffeeName}</li>"))}</ul></td>");
+        htmlBuilder.Append($"            <td><ul>{string.Join("", topCoffeeData.Select(data => $"<li>{data.QuantitySold}</li>"))}</ul></td>");
+        htmlBuilder.Append($"            <td><ul>{string.Join("", topAddInData.Select(data => $"<li>{data.AddInName}</li>"))}</ul></td>");
+        htmlBuilder.Append($"            <td><ul>{string.Join("", topAddInData.Select(data => $"<li>{data.QuantitySold}</li>"))}</ul></td>");
+        htmlBuilder.Append($"            <td>{totalRevenue}</td>");
+        htmlBuilder.Append("        </tr>");
+        htmlBuilder.Append("    </tbody>");
+        htmlBuilder.Append("</table>");
+
+        return htmlBuilder.ToString();
+    }
+
+
+    
+}

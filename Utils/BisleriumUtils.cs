@@ -114,39 +114,6 @@ namespace BisleriumCafe.Utils
                 string ExceptionMessage = ex.Message;
                 return ExceptionMessage;
             }
-        }
-
-        /*public static List<AddIns> ReadAddInsFromFile()
-        {
-            string filePath = AddInsFilePath();
-
-            try
-            {
-                string json = File.ReadAllText(filePath);
-                return JsonConvert.DeserializeObject<List<AddIns>>(json) ?? new List<AddIns>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading AddIns file: {ex.Message}");
-                return new List<AddIns>();
-            }
-
-        }
-        public static void WriteAddInsToFile(List<AddIns> addInsList)
-        {
-            string filePath = AddInsFilePath();
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(addInsList);
-                File.WriteAllText(filePath, json);
-            }
-            catch (Exception ex)
-            {
-                // Handle or log the exception
-                Console.WriteLine($"Error writing AddIns file: {ex.Message}");
-            }
-        }*/
-
+        }        
     }
 }

@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using BisleriumCafe.Data.Services;
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BisleriumCafe</a>
     </div>
@@ -13,15 +15,29 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="orders">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Order
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/membership">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> AddMembership
-            </NavLink>
-        </div>
+
+        @if (LoginService.IsAdmin(LoginService.CurrentUserRole) || LoginService.IsStaff(LoginService.CurrentUserRole))
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="orders">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> View Order
+                </NavLink>
+            </div>
+        }
+
+        @if (LoginService.IsAdmin(LoginService.CurrentUserRole))
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/membership">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Add Membership
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/salesReport">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Report
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>

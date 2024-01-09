@@ -2,21 +2,33 @@
 @inject BisleriumCafe.Data.Services.CustomerMembershipService CustomerMembershipService
 @using BisleriumCafe.Data.Models
 
-<h3 class="text-center">Membership Management</h3>
+<style>
+    body {
+        height: 70vh;
+    }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="phoneNumber" class="form-label">Enter Customer Phone Number:</label>
-                <input type="text" class="form-control" @bind="phoneNumber" placeholder="Enter phone number">
-            </div>
-            <button class="btn btn-primary" @onclick="MakeCustomerMember">Make Member</button>
-            <p class="text-success">@successMessage</p>
-            <p class="text-danger">@errorMessage</p>
-        </div>
-    </div>
-</div>
+    .login {
+        border: 1px solid white;
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    }
+</style>
+
+<body class="d-flex justify-content-center align-items-center">
+    <div class="justify-content-center login">
+        
+        <div class="container">
+            
+                    <div class="mb-3">
+                        <label for="phoneNumber">Enter Phone Number:</label><br />
+                        <input type="text" class="w-100 mt-2" @bind="phoneNumber" placeholder="Enter phone number">
+                    </div>
+                    <button class="btn btn-primary w-100" @onclick="MakeCustomerMember">Make Member</button>
+                    <p class="text-success">@successMessage</p>
+                    <p class="text-danger">@errorMessage</p>
+                </div>
+            </div>    
+</body>
 
 @code {
     private string phoneNumber;
@@ -24,8 +36,7 @@
     private string errorMessage;
 
     private void MakeCustomerMember()
-    {
-        // Check if the phone number is provided
+    {        
         if (!string.IsNullOrWhiteSpace(phoneNumber))
         {
             var customer = CustomerMembershipService.MakeCustomerMember(phoneNumber);

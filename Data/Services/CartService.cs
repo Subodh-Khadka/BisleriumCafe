@@ -1,4 +1,5 @@
 ﻿using BisleriumCafe.Data.Models;
+using BisleriumCafe.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using BisleriumCafe.Utils;
+
+
+
 
 namespace BisleriumCafe.Data.Services
 {
@@ -141,10 +145,15 @@ namespace BisleriumCafe.Data.Services
 */
 
         public string SubmitOrder()
-        {
+        {            
+            if (SelectedCoffee == null)
+            {                
+                return "Please add coffee to the cart before submitting the order.";
+            }
+
             try
             {
-                // Loading the existing customer data
+                
                 string customerFilePath = BisleriumUtils.CustomerFilePath();
                 List<Customer> existingCustomers = JsonConvert.DeserializeObject<List<Customer>>(File.ReadAllText(customerFilePath)) ?? new List<Customer>();
 
@@ -152,16 +161,14 @@ namespace BisleriumCafe.Data.Services
                 Customer existingCustomer = existingCustomers.FirstOrDefault(c => c.PhoneNumber == CurrentCustomer.PhoneNumber);
 
                 if (existingCustomer == null)
-                {
-                    // Assigning a new Id to the current customer
+                {                    
                     existingCustomer = CurrentCustomer;
                     existingCustomer.Id = Guid.NewGuid();
-                    existingCustomers.Add(existingCustomer); // Add the new customer to the list
+                    existingCustomers.Add(existingCustomer); 
                     existingCustomer.PurchaseCount = 1;
                 }
                 else
-                {
-                    // Increase the PurchaseCount count by 1 for existing customers
+                {                    
                     existingCustomer.PurchaseCount += 1;
                 }
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-
 public class LoginService
 {
     public static readonly Dictionary<string, string> users = new Dictionary<string, string>()
